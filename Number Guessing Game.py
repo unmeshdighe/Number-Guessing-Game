@@ -1,52 +1,56 @@
-import random #bring in the random number
+import random
 import time
-number=random.randint(1, 200) #pick the number between 1 and 200
 
 def intro():
     print("May I ask you for your name?")
-    name=input() #asks for the name
-    print(name + ", we are going to play a game. I am thinking of a number between 1 and 200")
-    time.sleep(.5)
+    name = input()  # Ask for the player's name
+    print(f"{name}, we are going to play a game. I am thinking of a number between 1 and 200.")
+    time.sleep(0.5)
     print("Go ahead. Guess!")
+    return name
 
-def pick():
-    guessesTaken = 0
-    while guessesTaken < 6: #if the number of guesses is less than 6
-        time.sleep(.25)
-        enter=input("Guess: ") #inserts the place to enter guess
-        try: #check if a number was entered
-            guess = int(enter) #stores the guess as an integer instead of a string    
+def pick(number, name):
+    guesses_taken = 0
+    while guesses_taken < 6:  # Allow up to 6 guesses
+        time.sleep(0.25)
+        enter = input("Guess: ")  # Prompt for the guess
 
-            if guess<=200 and guess>=1: #if they are in range
-                guessesTaken=guessesTaken+1 #adds one guess each time the player is wrong
-                if guessesTaken<6:
-                    if guess<number:
-                        print("The guess of the number that you have entered is too low")
-                    if guess>number:
-                        print("The guess of the number that you have entered is too high")
-                    if guess != number:
-                        time.sleep(.5)
-                        print("Try Again!")
-                if guess==number:
-                    break #if the guess is right, then we are going to jump out of the while block
-            if guess>200 or guess<1: #if they aren't in the range
+        try:
+            guess = int(enter)  # Convert the input to an integer
+
+            if 1 <= guess <= 200:  # Check if the guess is within the valid range
+                guesses_taken += 1  # Increment the guess count
+
+                if guess < number:
+                    print("The guess of the number that you have entered is too low.")
+                elif guess > number:
+                    print("The guess of the number that you have entered is too high.")
+                else:
+                    print(f'Good job, {name}! You guessed my number in {guesses_taken} guesses!')
+                    return  # Exit the function if the guess is correct
+
+                if guesses_taken < 6:
+                    time.sleep(0.5)
+                    print("Try Again!")
+            else:
                 print("Silly Goose! That number isn't in the range!")
-                time.sleep(.25)
-                print("Please enter a number between 1 and 200")
+                time.sleep(0.25)
+                print("Please enter a number between 1 and 200.")
 
-        except: #if a number wasn't entered
-            print("I don't think that "+enter+" is a number. Sorry")
-            
-    if guess == number:
-        guessesTaken = str(guessesTaken)
-        print('Good job, ' + name + '! You guessed my number in ' + guessesTaken + ' guesses!')
+        except ValueError:  # Handle non-integer inputs
+            print(f"I don't think that '{enter}' is a number. Sorry.")
 
-    if guess != number:
-        print('Nope. The number I was thinking of was ' + str(number))
+    # If the player runs out of guesses
+    print(f'Nope. The number I was thinking of was {number}.')
 
-playagain="yes"
-while playagain=="yes" or playagain=="y" or playagain=="Yes":
-    intro()
-    pick()
-    print("Do you want to play again?")
-    playagain=input()
+def main():
+    play_again = "yes"
+    while play_again.lower() in ["yes", "y"]:  # Allow for case-insensitive input
+        number = random.randint(1, 200)  # Generate a random number between 1 and 200
+        name = intro()  # Get the player's name
+        pick(number, name)  # Start the guessing game
+        print("Do you want to play again? (yes/no)")
+        play_again = input()
+
+if __name__ == "__main__":
+    main()
